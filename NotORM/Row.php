@@ -33,11 +33,16 @@ class Row extends ClassAbstract implements \IteratorAggregate, \ArrayAccess, \Co
 		if (!isset($referenced)) {
 			$keys = array();
 			
-	                $rows = is_array($this->result->rows) ? $this->result->rows : $this->result;
-                        foreach ($rows as $row) {
-				if ($row[$column] !== null) {
+			if (is_array($this->result->rows)) {
+				foreach ($this->result->rows as $row) {
+				    if ($row[$column] !== null) {
 					$keys[$row[$column]] = null;
+				    }
 				}
+			}
+
+			if (!$keys && isset($this->row[$column])) {
+				$keys[$this->row[$column]] = null;
 			}
 			if ($keys) {
 				$table = $this->result->notORM->structure->getReferencedTable($name, $this->result->table);
